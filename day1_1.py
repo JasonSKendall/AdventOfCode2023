@@ -5,7 +5,7 @@
 import re
 
 num = 0
-with open('/Users/jasonkendall/Desktop/Advent_of_code/day1_1_input.tx' , mode='r') as fhand:
+with open('/Users/jasonkendall/Desktop/Advent_of_code/day1_input.txt' , mode='r') as fhand:
     for rawline in fhand:
         current_line = rawline.rstrip()
         #print(current_line)
