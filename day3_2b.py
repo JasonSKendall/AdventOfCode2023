@@ -5,48 +5,127 @@ import re
 # https://adventofcode.com/2023/day/3
 
 
-def print_the_line_out(z):
-	print(len(z))
-	max = keep_len
-	this_line = ""
-	for i,c in enumerate(z):
-		if max == 0:
-			print(this_line)
-			max = keep_len
-			this_line = ""
-		this_line += c
-		max -= 1
-		
-	
+def print_gear_list():
+	for i in gear_list:
+		print(i)
+	print()
 
+gear_list = []
 
-big_long_string = ""
-
-#with open('/Users/jasonkendall/Desktop/Advent_of_code/p' , mode='r') as fhand:
-#with open('/Users/jasonkendall/Desktop/Advent_of_code/day3_input_CLEAN.txt' , mode='r') as fhand:
 #with open('/Users/jasonkendall/Desktop/Advent_of_code/day3_input_test.txt' , mode='r') as fhand:
 with open('/Users/jasonkendall/Desktop/Advent_of_code/day3_input.txt' , mode='r') as fhand:
-
+	i = 0
 	for rawline in fhand:
 		current_line = rawline.rstrip()
+		gear_list.append([])
+		gear_list[i].append(".")
+		for c in current_line:
+			if c.isnumeric():
+				gear_list[i].append(c)
+			elif c == "*":
+				gear_list[i].append("Z")
+			else:
+				gear_list[i].append(".")
+		gear_list[i].append(".")
+		i += 1
 
-		current_line = "." + current_line + "."
+keep_len = len(gear_list[0])
+boundary_list = ['.'] * keep_len 
+big_long_gear_list = [boundary_list] + gear_list + [boundary_list]
+gear_list = big_long_gear_list
 
-		keep_len = len(current_line)
-
-		current_line = re.sub( '[#\&\%\$=\+\@_\/\-]' , "." , current_line)
-		current_line = re.sub( '\*' , "Z" , current_line)
-
-		big_long_string += current_line
-
-	
-
-boundary_line = "." * keep_len 
-big_long_string = boundary_line + big_long_string + boundary_line 
+#print_gear_list()
 
 
-off_line_locations_to_check_add_one = [ (True, True, True), (True, False, False), (False, False, True), (True, True, False), (False, True, True) ]
-off_line_locations_to_check_add_two =  (True, False, True) 
+locations_to_check = [ 
+( True , False , False , True , False, False, False, False ) ,
+( True , False , False , False, True , False, False, False ) ,
+( True , False , False , False, False, True, False, False ) ,
+( True , False , False , False, False, True, True, False ) ,
+( True , False , False , False, False, True, True, True ) ,
+( True , False , False , False, False, False, True, True ) ,
+( True , False , False , False, False, False, False, True ) ,
+
+( True , True , False , True , False, False, False, False ) ,
+( True , True , False , False, True , False, False, False ) ,
+( True , True , False , False, False, True, False, False ) ,
+( True , True , False , False, False, True, True, False ) ,
+( True , True , False , False, False, True, True, True ) ,
+( True , True , False , False, False, False, True, True ) ,
+( True , True , False , False, False, False, False, True ) ,
+
+( True , True , True , True , False, False, False, False ) ,
+( True , True , True , False, True , False, False, False ) ,
+( True , True , True , False, False, True, False, False ) ,
+( True , True , True , False, False, True, True, False ) ,
+( True , True , True , False, False, True, True, True ) ,
+( True , True , True , False, False, False, True, True ) ,
+( True , True , True , False, False, False, False, True ) ,
+
+( False , True , True , True , False, False, False, False ) ,
+( False , True , True , False, True , False, False, False ) ,
+( False , True , True , False, False, True, False, False ) ,
+( False , True , True , False, False, True, True, False ) ,
+( False , True , True , False, False, True, True, True ) ,
+( False , True , True , False, False, False, True, True ) ,
+( False , True , True , False, False, False, False, True ) ,
+
+( False , False , True , True , False, False, False, False ) ,
+( False , False , True , False, True , False, False, False ) ,
+( False , False , True , False, False, True, False, False ) ,
+( False , False , True , False, False, True, True, False ) ,
+( False , False , True , False, False, True, True, True ) ,
+( False , False , True , False, False, False, True, True ) ,
+( False , False , True , False, False, False, False, True ) ,
+
+( False , False , False , True , False,  True, False, False ) ,
+( False , False , False , False, True,   True, False, False ) ,
+( True , False , False , False, False,   True, False, False ) ,
+( True , True , False , False, False,    True, False, False ) ,
+( True , True , True , False, False,     True, False, False ) ,
+( False , True , True , False, False,    True, False, False ) ,
+( False , False , True , False, False,     True, False, False ) ,
+
+( False , False , False , True , False,  True, True, False ) ,
+( False , False , False , False, True,   True, True, False ) ,
+( True , False , False , False, False,   True, True, False ) ,
+( True , True , False , False, False,    True, True, False ) ,
+( True , True , True , False, False,     True, True, False ) ,
+( False , True , True , False, False,    True, True, False ) ,
+( False , False , True , False, False,     True, True, False ) ,
+
+( False , False , False , True , False,  True, True, True ) ,
+( False , False , False , False, True,   True, True, True ) ,
+( True , False , False , False, False,   True, True, True ) ,
+( True , True , False , False, False,    True, True, True ) ,
+( True , True , True , False, False,     True, True, True ) ,
+( False , True , True , False, False,    True, True, True ) ,
+( False , False , True , False, False,     True, True, True ) ,
+
+( False , False , False , True , False,  False, True, True ) ,
+( False , False , False , False, True,   False, True, True ) ,
+( True , False , False , False, False,   False, True, True ) ,
+( True , True , False , False, False,    False, True, True ) ,
+( True , True , True , False, False,     False, True, True ) ,
+( False , True , True , False, False,    False, True, True ) ,
+( False , False , True , False, False,     False, True, True ) ,
+
+( False , False , False , True , False,  False, False, True ) ,
+( False , False , False , False, True,   False, False, True ) ,
+( True , False , False , False, False,   False, False, True ) ,
+( True , True , False , False, False,    False, False, True ) ,
+( True , True , True , False, False,     False, False, True ) ,
+( False , True , True , False, False,    False, False, True ) ,
+( False , False , True , False, False,     False, False, True ) ,
+
+( False , False , False , True , True,  False, False, False ) ,
+( True , False , True , False , False,  False, False, False ) ,
+( False , False , False , False , False,  True, False, True ) 
+
+]
+
+
+
 
 include_this_number = False
 current_number = ""
@@ -55,93 +134,67 @@ big_long_string_redo = ""
 
 
 z_keeper = dict()
-for i,c in enumerate(big_long_string):
-	if c == "Z":
+for i in range(len(gear_list)):
+	for j in range(len(gear_list[i])):
 		z_counter = 0
+		if gear_list[i][j] == "Z":
 
-		top_l = i - keep_len - 1
-		top_m = i - keep_len 
-		top_r = i - keep_len + 1
+			top_l = gear_list[i-1][j-1].isnumeric()
+			top_m = gear_list[i-1][j].isnumeric()
+			top_r = gear_list[i-1][j+1].isnumeric()
 
-		bot_l = i + keep_len - 1
-		bot_m = i + keep_len 
-		bot_r = i + keep_len + 1
+			bot_l = gear_list[i+1][j-1].isnumeric()
+			bot_m = gear_list[i+1][j].isnumeric()
+			bot_r = gear_list[i+1][j+1].isnumeric()
 
-		mid_l = i - 1
-		mid_r = i + 1
+			mid_l = gear_list[i][j-1].isnumeric()
+			mid_r = gear_list[i][j+1].isnumeric()
 
-		top_nums = ( big_long_string[top_l].isnumeric() , big_long_string[top_m].isnumeric() , big_long_string[top_r].isnumeric() )
-		bot_nums = ( big_long_string[bot_l].isnumeric() , big_long_string[bot_m].isnumeric() , big_long_string[bot_r].isnumeric() )
-		lef_num  = big_long_string[mid_l].isnumeric()
-		rgt_num  = big_long_string[mid_r].isnumeric()
-
-		if top_nums in off_line_locations_to_check_add_one:
-			z_counter += 1
-		if top_nums == off_line_locations_to_check_add_two:
-			z_counter += 2
-		
-		if bot_nums in off_line_locations_to_check_add_one:
-			z_counter += 1
-		if bot_nums == off_line_locations_to_check_add_two:
-			z_counter += 2
-
-		if lef_num:
-			z_counter += 1
-
-		if rgt_num:
-			z_counter += 1
-
-		if z_counter == 2:
-			big_long_string_redo += "Z"
-			z_keeper[i] = []
-		else:
-			big_long_string_redo += "."
-	else:
-		big_long_string_redo += c
+			if ( top_l , top_m , top_r , mid_l , mid_r, bot_l, bot_m, bot_r ) in locations_to_check:
+				z_keeper[(i,j)] = []
+			else:
+				gear_list[i][j] = "."
 
 
 
-#print_the_line_out(big_long_string_redo)
+#print_gear_list()
 
 
-locations_to_check = [ -1 , +1 , (- keep_len - 1 ), -keep_len , -keep_len + 1, keep_len -1, keep_len, keep_len + 1]
-include_this_number = False
-this_z = -1
-run_sum = 0
-current_number = ""
-big_long_string_redo_with_correct_nums = ""
-
-#print(len(big_long_string_redo))
-
-for i,c in enumerate(big_long_string_redo):
-	if c.isnumeric():
-		current_number += c
-		for j in locations_to_check:
-			k = i + j
-			if big_long_string_redo[k] == "Z":
-				keep_this_z = k
-				include_this_number = True
-		continue
-	
-	if len(current_number) > 0:
-		if include_this_number:
-			#print("keeping it", current_number)
-			run_sum += int(current_number)
-			z_keeper[keep_this_z].append(int(current_number))
-		else:
-			current_number = re.sub( '[0-9]' , "." , current_number)
-			#print("wiping it out", current_number)
-		big_long_string_redo_with_correct_nums += current_number
-		current_number = ""
-		keep_this_z = 0
-
-	big_long_string_redo_with_correct_nums += c
+for i in range(len(gear_list)):
+	current_number = []
 	include_this_number = False
-	current_number = ""
-		
-#print_the_line_out(big_long_string_redo_with_correct_nums)
+	this_i = -99
+	this_j = -99
+	for j in range(len(gear_list[i])):
+		if gear_list[i][j].isnumeric():
+			current_number.append(j)
+			for m in i-1, i, i+1:
+				for n in j-1, j, j+1:
+					if gear_list[m][n] == "Z":
+						include_this_number = True
+						this_i = m
+						this_j = n
+			continue
+	
+		if len(current_number) > 0:
+			current_num_str = ""
+			if include_this_number:
+				for q in current_number:
+					current_num_str += gear_list[i][q]
+				final_num = int(current_num_str)
+			for q in current_number:
+				gear_list[i][q] = "."
+			if include_this_number:
+				z_keeper[(this_i , this_j)].append(final_num)
+
+			final_num = -99
+			current_number = []
+			include_this_number = False
 
 
+#print_gear_list()
+
+print(z_keeper)
 
 run_sum = 0
 for key in z_keeper.keys():
